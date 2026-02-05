@@ -3,7 +3,7 @@ import axios from "axios"
 const URL = "http://localhost:8082/auth/token";
 const USER = {
     user: "Marielena",
-    password: "1234"
+    password: "123"
 }
 
 const obtenerToken = async () => {

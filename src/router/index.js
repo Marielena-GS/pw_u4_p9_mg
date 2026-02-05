@@ -11,7 +11,12 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView, 
+    
+    meta: {
+      requiereAutorizacion:  true,
+      esPublica: false
+    }
   },
   {
     path: '/about',
@@ -19,14 +24,48 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
+    meta: {
+      requiereAutorizacion:  true,
+      esPublica: false
+    }
   },
-   { path: '/todos', name: 'listar_todos', component: TodosView },
-  { path: '/crear', name: 'guardar', component: CrearView },
-  { path: '/por-id', name: 'consultar_por_id', component: PorIdView },
-  { path: '/actualizar', name: 'actualizar', component: ActualizarView },
-  { path: '/parcial', name: 'actualizar_parcial', component: ParcialView },
-  { path: '/borrar', name: 'borrar', component: BorrarView },
+  { path: '/todos', name: 'listar_todos', 
+    component: TodosView,
+    meta: {
+      requiereAutorizacion:  false,
+      esPublica: false
+    }},
+  { path: '/crear', name: 'guardar', component: CrearView,
+    meta: {
+      requiereAutorizacion:  false,
+      esPublica: false
+    }
+   },
+  { path: '/por-id', name: 'consultar_por_id', component: PorIdView,
+    meta: {
+      requiereAutorizacion:  false,
+      esPublica: false
+    }
+   },
+  { path: '/actualizar', name: 'actualizar', component: ActualizarView,
+    meta: {
+      requiereAutorizacion:  true,
+      esPublica: false
+    }
+   },
+  { path: '/parcial', name: 'actualizar_parcial', component: ParcialView,
+    meta: {
+      requiereAutorizacion:  true,
+      esPublica: false
+    }
+   },
+  { path: '/borrar', name: 'borrar', component: BorrarView,
+    meta: {
+      requiereAutorizacion:  true,
+      esPublica: false
+    }
+   },
 ]
 
 const router = createRouter({
@@ -34,4 +73,19 @@ const router = createRouter({
   routes
 })
 
+/*Configuracion del guardián*/
+
+router.beforeEach((to, from, next)=>{
+  if(to.meta.requiereAutorizacion){
+    /*si necesita autorizacion lo envío a una página de login*/
+    console.log("Redirige al Login")
+  }else{
+    /*lo dejo sin validaciones*/
+    console.log("Pase libre")
+    next();
+  }
+})
+
 export default router
+
+
