@@ -46,19 +46,29 @@
 
           <!-- Links HATEOAS (si vienen) -->
           <div v-if="est.links && est.links.length" class="links">
-            <a v-for="(l, idx) in est.links" :key="idx" :href="l.href" target="_blank" rel="noreferrer" class="link">{{ l.rel }}</a>
+            <a
+              v-for="(l, idx) in est.links"
+              :key="idx"
+              :href="l.href"
+              target="_blank"
+              rel="noreferrer"
+              class="link"
+              >{{ l.rel }}</a
+            >
           </div>
         </div>
       </div>
 
-      <div v-if="mensaje" class="msg" :class="ok ? 'ok' : 'err'">{{ mensaje }}</div>
+      <div v-if="mensaje" class="msg" :class="ok ? 'ok' : 'err'">
+        {{ mensaje }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { consultarTodosFachada } from "@/client/MatriculaClient.js";
-
+import { obtenerTokenFachada } from "@/client/Authorization";
 export default {
   data() {
     return {
@@ -71,14 +81,20 @@ export default {
     setMsg(ok, text) {
       this.ok = ok;
       this.mensaje = text;
-      setTimeout(() => (this.mensaje = ""), 2500);
+      setTimeout(() => (this.mensaje = ""), 25000);
     },
     async cargar() {
       try {
-        this.estudiantes = await consultarTodosFachada();
+        const token = await obtenerTokenFachada();
+
+        this.estudiantes = await consultarTodosFachada(token);
+
         this.setMsg(true, `Cargados: ${this.estudiantes.length} estudiantes`);
       } catch (e) {
-        this.setMsg(false, "Error: " + (e?.response?.data?.message || e.message));
+        this.setMsg(
+          false,
+          "Error: " + (e?.response?.data?.message || e.message)
+        );
       }
     },
   },
@@ -241,3 +257,5 @@ h2 {
   }
 }
 </style>
+
+
