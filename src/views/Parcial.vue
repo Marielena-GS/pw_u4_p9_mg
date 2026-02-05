@@ -61,7 +61,8 @@
         </p>
 
         <div v-if="actualizado.links && actualizado.links.length" class="links">
-          <a v-for="(l, idx) in actualizado.links" :key="idx" :href="l.href" target="_blank" rel="noreferrer" class="chip">{{ l.rel }}</a>
+          <a v-for="(l, idx) in actualizado.links" :key="idx" :href="l.href" target="_blank" rel="noreferrer"
+            class="chip">{{ l.rel }}</a>
         </div>
       </div>
     </div>
@@ -69,6 +70,7 @@
 </template>
 
 <script>
+import { obtenerTokenFachada } from "@/client/Authorization";
 import { actualizarParcialFachada } from "@/client/MatriculaClient.js";
 
 export default {
@@ -123,8 +125,8 @@ export default {
       }
 
       try {
-        const resp = await actualizarParcialFachada(this.id, payload);
-
+        const token = await obtenerTokenFachada();
+        const resp = await actualizarParcialFachada(this.id, payload, token);
         this.actualizado = resp || null;
 
         this.ok = true;

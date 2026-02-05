@@ -3,13 +3,14 @@ import axios from "axios"
 const URL = "http://localhost:8082/auth/token";
 const USER = {
     user: "Marielena",
-    password: "123",
-    role:"admin"
+    password: "1234"
 }
 
 const obtenerToken = async () => {
-  const { data } = await axios.post(URL, USER)
-  return data
+  const { data } = await axios.get(URL, {
+    params: { user: USER.user, password: USER.password},
+  });
+  return data.accessToken;
 }
 
 

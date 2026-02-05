@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { obtenerTokenFachada } from "@/client/Authorization";
 import { borrarFachada } from "@/client/MatriculaClient.js";
 
 export default {
@@ -58,7 +59,8 @@ export default {
       }
 
       try {
-        await borrarFachada(this.id);
+        const token = await obtenerTokenFachada();
+        await borrarFachada(this.id, token);
         this.ok = true;
         this.mensaje = `Estudiante con ID ${this.id} eliminado correctamente`;
         this.confirmar = false;
@@ -71,7 +73,7 @@ export default {
           status === 404
             ? "No existe un estudiante con ese ID"
             : "Error al borrar: " +
-              (e?.response?.data?.message || e.message);
+            (e?.response?.data?.message || e.message);
       }
     },
   },

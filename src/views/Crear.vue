@@ -18,7 +18,7 @@
 
         <div class="field">
           <label>Fecha Nacimiento (YYYY-MM-DDTHH:mm:ss)</label>
-          <input v-model.trim="body.fechaNacimiento" placeholder="2004-01-01T00:00:00"/>
+          <input v-model.trim="body.fechaNacimiento" placeholder="2004-01-01T00:00:00" />
           <small class="hint">Ej: 2004-01-01T00:00:00</small>
         </div>
 
@@ -67,7 +67,8 @@
         </div>
 
         <div v-if="creado.links && creado.links.length" class="links">
-          <a v-for="(l, idx) in creado.links" :key="idx" :href="l.href" target="_blank" rel="noreferrer" class="chip">{{ l.rel }}</a>
+          <a v-for="(l, idx) in creado.links" :key="idx" :href="l.href" target="_blank" rel="noreferrer" class="chip">{{
+            l.rel }}</a>
         </div>
       </div>
     </div>
@@ -75,6 +76,7 @@
 </template>
 
 <script>
+import { obtenerTokenFachada } from "@/client/Authorization";
 import { guardarFachada } from "@/client/MatriculaClient.js";
 
 export default {
@@ -124,7 +126,8 @@ export default {
       }
 
       try {
-        const resp = await guardarFachada(this.body);
+        const token = await obtenerTokenFachada();
+        const resp = await guardarFachada(this.body, token);
         this.creado = resp || null;
 
         this.ok = true;
@@ -324,6 +327,7 @@ select:focus {
   .form {
     grid-template-columns: 1fr;
   }
+
   .mini-form {
     grid-template-columns: 1fr;
   }

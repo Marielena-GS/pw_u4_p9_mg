@@ -21,7 +21,7 @@
 
         <div class="field">
           <label>Fecha Nacimiento</label>
-          <input v-model="body.fechaNacimiento" placeholder="2004-01-01T00:00:00"/>
+          <input v-model="body.fechaNacimiento" placeholder="2004-01-01T00:00:00" />
         </div>
 
         <div class="field">
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import { obtenerTokenFachada } from "@/client/Authorization";
 import { actualizarFachada } from "@/client/MatriculaClient.js";
 
 export default {
@@ -102,7 +103,8 @@ export default {
       }
 
       try {
-        const resp = await actualizarFachada(this.id, this.body);
+        const token = await obtenerTokenFachada();
+        const resp = await actualizarFachada(this.id, this.body, token);
         this.actualizado = resp;
         this.ok = true;
         this.mensaje = `Estudiante con ID ${resp.id} actualizado correctamente`;
@@ -114,7 +116,7 @@ export default {
           status === 404
             ? "No existe un estudiante con ese ID"
             : "Error al actualizar: " +
-              (e?.response?.data?.message || e.message);
+            (e?.response?.data?.message || e.message);
       }
     },
   },

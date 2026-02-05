@@ -53,14 +53,15 @@
         </div>
 
         <div class="links" v-if="estudiante.links && estudiante.links.length">
-          <a v-for="(l, idx) in estudiante.links" :key="idx" class="chip" :href="l.href" target="_blank" rel="noreferrer">{{ l.rel }}</a>
+          <a v-for="(l, idx) in estudiante.links" :key="idx" class="chip" :href="l.href" target="_blank"
+            rel="noreferrer">{{ l.rel }}</a>
           <button v-if="linkHijos" class="chip-btn" @click="cargarHijos">Ver hijos</button>
         </div>
 
         <div v-if="hijosCargados" class="hijos">
           <div class="hijos-head">
             <h3>Hijos</h3>
-            <button class="btn small" @click="hijos = []; hijosCargados=false">Ocultar</button>
+            <button class="btn small" @click="hijos = []; hijosCargados = false">Ocultar</button>
           </div>
 
           <p v-if="hijos.length === 0" class="hint">
@@ -92,6 +93,7 @@
 <script>
 import axios from "axios";
 import { consultarPorIdFachada } from "@/client/MatriculaClient.js";
+import { obtenerTokenFachada } from "@/client/Authorization";
 
 export default {
   data() {
@@ -126,7 +128,8 @@ export default {
         return;
       }
       try {
-        const data = await consultarPorIdFachada(this.id);
+        const token = await obtenerTokenFachada();
+        const data = await consultarPorIdFachada(this.id, token);
         this.estudiante = data;
 
         this.hijos = [];
@@ -152,8 +155,10 @@ export default {
       if (!this.linkHijos?.href) return;
 
       try {
-        const r = await axios.get(this.linkHijos.href);
-        this.hijos = Array.isArray(r.data) ? r.data : [];
+        const token = await obtenerTokenFachada();
+        const r = await axios.get(this.linkHijos.href, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         this.hijosCargados = true;
 
         this.ok = true;
@@ -426,8 +431,17 @@ input:focus {
 }
 
 @media (max-width: 750px) {
-  input { width: 92vw; max-width: 360px; }
-  .form { grid-template-columns: 1fr; }
-  .hijos-grid { grid-template-columns: 1fr; }
+  input {
+    width: 92vw;
+    max-width: 360px;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .hijos-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

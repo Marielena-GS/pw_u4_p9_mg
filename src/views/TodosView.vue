@@ -6,7 +6,7 @@
         <button class="btn primary" @click="cargar">Cargar</button>
       </div>
 
-      <p v-if="!estudiantes.length" class="hint">
+      <p v-if="!Array.isArray(estudiantes) || estudiantes.length === 0" class="hint">
         No hay estudiantes cargados (o la lista está vacía).
       </p>
 
@@ -86,9 +86,7 @@ export default {
     async cargar() {
       try {
         const token = await obtenerTokenFachada();
-
         this.estudiantes = await consultarTodosFachada(token);
-
         this.setMsg(true, `Cargados: ${this.estudiantes.length} estudiantes`);
       } catch (e) {
         this.setMsg(

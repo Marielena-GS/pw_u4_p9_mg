@@ -29,6 +29,7 @@
 
 
 <script>
+import { obtenerTokenFachada } from "@/client/Authorization.js";
 import {
   consultarPorIdFachada,
   consultarTodosFachada,
@@ -37,6 +38,7 @@ import {
   borrarFachada,
   guardarFachada,
 } from "../client/MatriculaClient.js";
+
 
 export default {
 
@@ -51,41 +53,46 @@ export default {
     };
   },
   methods: {
-    async consultarAll() {
-      const data = await consultarTodosFachada();
-      console.log("CONSULTAR TODOS:", data);
-    },
+      async consultarAll() {
+        const token = await obtenerTokenFachada();
+        const data = await consultarTodosFachada(token); // <-- FIX
+        console.log("CONSULTAR TODOS:", data);
+      },
 
-    async consultarPorId() {
-      if (!this.id) return console.warn("Ingresa un ID");
-      const data = await consultarPorIdFachada(this.id);
-      console.log("CONSULTAR POR ID:", data);
-    },
+      async consultarPorId() {
+        if (!this.id) return console.warn("Ingresa un ID");
+        const token = await obtenerTokenFachada();
+        const data = await consultarPorIdFachada(this.id, token);
+        console.log("CONSULTAR POR ID:", data);
+      },
 
-    async crear() {
-      const data = await guardarFachada(this.body);
-      console.log("CREAR:", data);
-    },
+      async crear() {
+        const token = await obtenerTokenFachada();
+        const data = await guardarFachada(this.body, token);
+        console.log("CREAR:", data);
+      },
 
-   
-    async actualizar() {
-      if (!this.id) return console.warn("Ingresa un ID");
-      const data = await actualizarFachada(this.id, this.body);
-      console.log("ACTUALIZAR:", data);
-    },
+      async actualizar() {
+        if (!this.id) return console.warn("Ingresa un ID");
+        const token = await obtenerTokenFachada();
+        const data = await actualizarFachada(this.id, this.body, token);
+        console.log("ACTUALIZAR:", data);
+      },
 
-    async actualizarParcial() {
-      if (!this.id) return console.warn("Ingresa un ID");
-      const data = await actualizarParcialFachada(this.id, this.body);
-      console.log("ACTUALIZAR PARCIAL:", data);
-    },
+      async actualizarParcial() {
+        if (!this.id) return console.warn("Ingresa un ID");
+        const token = await obtenerTokenFachada();
+        const data = await actualizarParcialFachada(this.id, this.body, token);
+        console.log("ACTUALIZAR PARCIAL:", data);
+      },
 
-    async eliminar() {
-      if (!this.id) return console.warn("Ingresa un ID");
-      await borrarFachada(this.id);
-      console.log("ELIMINADO ID:", this.id);
+      async eliminar() {
+        if (!this.id) return console.warn("Ingresa un ID");
+        const token = await obtenerTokenFachada();
+        await borrarFachada(this.id, token);
+        console.log("ELIMINADO ID:", this.id);
+      },
     },
-  }
 };
 </script>
 <style scoped>
@@ -98,11 +105,11 @@ div {
 }
 
 /* cada bloque */
-.bloque{
+.bloque {
   width: 360px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin: 10px 0;
 }
 
@@ -119,7 +126,7 @@ input {
 
 input:focus {
   border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
 }
 
 /* Botones base */
@@ -135,32 +142,61 @@ input:focus {
   transition: transform .08s ease, filter .15s ease;
 }
 
-.btn:hover { filter: brightness(.96); }
-.btn:active { transform: scale(.98); }
+.btn:hover {
+  filter: brightness(.96);
+}
+
+.btn:active {
+  transform: scale(.98);
+}
 
 /* Colores */
-.primary{ background:#2563eb; color:#fff; }
-.success{ background:#22c55e; color:#fff; }
-.warning{ background:#f59e0b; color:#fff; }
-.info{ background:#06b6d4; color:#fff; }
-.danger{ background:#ef4444; color:#fff; }
+.primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.success {
+  background: #22c55e;
+  color: #fff;
+}
+
+.warning {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.info {
+  background: #06b6d4;
+  color: #fff;
+}
+
+.danger {
+  background: #ef4444;
+  color: #fff;
+}
 
 /* fila de botones (crear/actualizar/parcial) */
-.btn-row{
+.btn-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1.4fr;
   gap: 10px;
 }
 
-.btn-row .btn{
+.btn-row .btn {
   width: 100%;
   font-size: 13px;
   padding: 10px;
 }
 
 /* responsive */
-@media (max-width: 420px){
-  .bloque{ width: 92vw; }
-  .btn-row{ grid-template-columns: 1fr; }
+@media (max-width: 420px) {
+  .bloque {
+    width: 92vw;
+  }
+
+  .btn-row {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
