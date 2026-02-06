@@ -9,7 +9,9 @@
 </template>
 
 <script>
+import { loginFachada } from '@/client/Authorization';
 import router from '@/router';
+
 export default {
   data() {
     return {
@@ -17,26 +19,26 @@ export default {
       password: "",
     };
   },
-
   methods: {
-    login() {
-      /*Mando a obtener el token*/
-      const token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJtYXRyaWN1bGEtYXV0aCIsInN1YiI6Ik1hcmllbGVuYSIsImdyb3VwcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzAzMzY1MzUsImV4cCI6MTc3MDM0MDEzNSwianRpIjoiMTM4MTlmOTQtZTJhOS00NjFjLTkxMjYtYmI2Y2E4NTk2YWRhIn0.bYJ6wTQ7zvaOlWdm7HsHNwIBrrPbVnA09EH-aUIEHUQ5ip_aWtxBcUP8hJOMbfj1NbHYbA9x6Ypl_22YaHxJPn5pGt0TnRD-T8G0YSAQoZqfJKyZes63JfxKnejn140EQkKwBmxK7sHMiuKi5dvLiYHIZAnQpbQYHstMKyMi6OTk6MQruB3m7PbLIFMVSKM6yV1f0najeJNn6O1TVYwujNgpM1CrxQxmpwnqgSvfW7gFN92LmOC6Z2F3dVx_gfVcMIrmtwgM7YJyW4oF3OUBwQn6gUlvx2IZ9nZzKZkW2LmNi_QUq4OGigiM2ud9TZXmvp0zOx2XNz73tl9Q93V4kw";
+    async login() {
+      try {
+        /* Obtengo token REAL desde backend */
+        await loginFachada(this.usuario, this.password);
 
-      if (token !== null) {
-        localStorage.setItem("token", token);
-        localStorage.setItem("estaAutenticado", true);
         console.log("Registrado");
-      } else {
+        console.log("TOKEN:", localStorage.getItem("token"));
+
+        /* Redirige a la vista protegida */
+        router.push("/about");
+
+      } catch (error) {
         console.log("Error de autenticación");
-        console.log("No Registrado");
+        console.log(error?.response?.data?.message || error.message);
       }
     },
-  },
+  }
 };
 </script>
-
 <style>
 .login {
   width: 300px;

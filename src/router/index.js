@@ -90,22 +90,22 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiereAutorizacion) {
-    /*si necesita autorizacion lo envío a una página de login*/
     const estaAutenticado = localStorage.getItem("estaAutenticado");
     const token = localStorage.getItem("token");
-    if (!estaAutenticado) {
-      console.log("Redirige al Login")
-      next({ name: 'login' });
-    }else{
+
+    if (!estaAutenticado || !token) {
+      console.log("Redirige al Login");
+      next({ name: "login" });
+    } else {
+      console.log("Autenticado, pasa");
+      next();
     }
-    console.log("Redirige al Login")
-    next({ name: 'login' });
   } else {
-    /*lo dejo sin validaciones*/
-    console.log("Pase libre")
+    console.log("Pase libre");
     next();
   }
-})
+});
+
 
 export default router
 

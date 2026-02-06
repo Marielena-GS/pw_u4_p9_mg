@@ -9,28 +9,52 @@
       <router-link class="nav__link" to="/actualizar">Actualizar</router-link>
       <router-link class="nav__link" to="/parcial">Actualizar Parcial</router-link>
       <router-link class="nav__link danger" to="/borrar">Borrar</router-link>
+
+      <button v-if="estaAutenticado" class="nav__link danger" @click="logout">
+        Cerrar sesión
+      </button>
     </nav>
   </header>
 
-  <router-view/>
+  <router-view />
 </template>
 
+<script>
+import router from "@/router";
+import { logoutFachada, estaAutenticadoFachada } from "@/client/Authorization";
+
+export default {
+  computed: {
+    estaAutenticado() {
+      return estaAutenticadoFachada();
+    },
+  },
+  methods: {
+    async logout() {
+      await logoutFachada();
+      console.log("Sesión cerrada");
+      router.push("/login");
+    },
+  },
+};
+</script>
+
 <style scoped>
-.topbar{
+.topbar {
   padding: 14px 18px;
   border-bottom: 1px solid #e5e7eb;
   background: #ffffff;
 }
 
-.nav{
+.nav {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  justify-content: center;   /* ✅ centrado */
+  justify-content: center;
   align-items: center;
 }
 
-.nav__link{
+.nav__link {
   text-decoration: none;
   padding: 10px 12px;
   border-radius: 10px;
@@ -40,17 +64,17 @@
   background: #f9fafb;
 }
 
-.nav__link:hover{
+.nav__link:hover {
   background: #eef2ff;
 }
 
-.router-link-exact-active{
+.router-link-exact-active {
   border-color: #22c55e;
   background: #dcfce7;
   color: #166534;
 }
 
-.nav__link.danger{
+.nav__link.danger {
   border-color: #fecaca;
   background: #fff1f2;
   color: #991b1b;
@@ -62,8 +86,7 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;   /* ✅ esto centra el Home */
+  text-align: center;
   color: #2c3e50;
 }
 </style>
-

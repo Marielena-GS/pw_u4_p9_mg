@@ -1,77 +1,49 @@
-import axios from "axios"
+import axios from "axios";
+import { obtenerTokenFachada } from "@/client/Authorization.js";
 
 const BASE = "http://localhost:8081/matricula/api/v1.0/estudiantes";
-const authHeader = (token) => (
-    {
-        headers: { Authorization: `Bearer ${token}` },
-    });
 
-const consultarTodos = async (token) => {
-    const data = await axios.get(BASE, authHeader(token));
-    console.log(data);
-    return data.data;
-}
+const authHeader = async () => {
+  const token = await obtenerTokenFachada();
+  return {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+};
 
-const consultarPorId = async (id, token) => {
-    const { data } = await axios.get(`${BASE}/${id}`, authHeader(token));
-    console.log(data);
-    return data;
-}
+const consultarTodos = async () => {
+  const res = await axios.get(BASE, await authHeader());
+  return res.data;
+};
 
-const guardar = async (body, token) => {
+const consultarPorId = async (id) => {
+  const { data } = await axios.get(`${BASE}/${id}`, await authHeader());
+  return data;
+};
 
-    /*const objeto = {
-        nombre: 'Marielena',
-        apellido: 'Gonzalez'
-    }*/
+const guardar = async (body) => {
+  const { data } = await axios.post(BASE, body, await authHeader());
+  return data;
+};
 
-    const { data } = await axios.post(BASE, body, authHeader(token));
-    console.log(data);
-    return data;
-}
+const actualizar = async (id, body) => {
+  const { data } = await axios.put(`${BASE}/${id}`, body, await authHeader());
+  return data;
+};
 
-const actualizar = async (id, body, token) => {
-    const { data } = await axios.put(`${BASE}/${id}`, body, authHeader(token));
-    console.log(data);
-    return data;
-}
+const actualizarParcial = async (id, body) => {
+  const { data } = await axios.patch(`${BASE}/${id}`, body, await authHeader());
+  return data;
+};
 
-const actualizarParcial = async (id, body, token) => {
-    const { data } = await axios.patch(`${BASE}/${id}`, body, authHeader(token));
-    console.log(data);
-    return data;
-}
+const borrar = async (id) => {
+  const { data } = await axios.delete(`${BASE}/${id}`, await authHeader());
+  return data;
+};
 
-const borrar = async (id, token) => {
-    const { data } = await axios.delete(`${BASE}/${id}`, authHeader(token));
-    return data;
-}
-
-
-
-
-export const consultarTodosFachada = async (token) => {
-    return await consultarTodos(token);
-}
-
-export const consultarPorIdFachada = async (id, token) => {
-    return await consultarPorId(id, token);
-}
-
-export const guardarFachada = async (body, token) => {
-
-    return await guardar(body, token);
-}
-
-export const actualizarFachada = async (id, body, token) => {
-    return await actualizar(id, body, token);
-}
-
-export const actualizarParcialFachada = async (id, body, token) => {
-    return await actualizarParcial(id, body, token);
-}
-
-export const borrarFachada = async (id, token) => {
-    return await borrar(id, token);
-}
-
+// Fachadas (sin token, porque ya lo obtiene solo)
+export const consultarTodosFachada = async () => await consultarTodos();
+export const consultarPorIdFachada = async (id) => await consultarPorId(id);
+export const guardarFachada = async (body) => await guardar(body);
+export const actualizarFachada = async (id, body) => await actualizar(id, body);
+export const actualizarParcialFachada = async (id, body) => await actualizarParcial(id, body);
+export const borrarFachada = async (id) => await borrar(id);
